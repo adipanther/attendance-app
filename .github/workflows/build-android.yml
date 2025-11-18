@@ -27,15 +27,20 @@ jobs:
     - name: Install Cordova
       run: npm install -g cordova
     
+    - name: Navigate to mobile directory
+      run: cd attendance-mobile
+    
     - name: Install dependencies
       working-directory: ./attendance-mobile
-      run: |
-        npm install
-        cordova platform add android
+      run: npm install
+    
+    - name: Add Android platform
+      working-directory: ./attendance-mobile
+      run: cordova platform add android
     
     - name: Build Android APK
       working-directory: ./attendance-mobile
-      run: cordova build android --release
+      run: cordova build android
     
     - name: Upload APK
       uses: actions/upload-artifact@v3
