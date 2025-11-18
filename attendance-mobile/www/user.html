@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Panel - Attendance System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <h1>Attendance System</h1>
+            <div class="nav-actions">
+                <span id="userName"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="user-panel">
+            <!-- Check-in Section -->
+            <div class="card">
+                <h2>Mark Attendance</h2>
+                <div id="attendanceStatus" class="status-message"></div>
+                
+                <div id="checkInSection">
+                    <div class="form-group">
+                        <label for="locationSelect">Select Location</label>
+                        <select id="locationSelect" class="form-control">
+                            <option value="">Loading locations...</option>
+                        </select>
+                    </div>
+                    <div id="locationInfo" class="location-info"></div>
+                    <button onclick="checkIn()" class="btn btn-primary btn-large" id="checkInBtn">
+                        Check In
+                    </button>
+                </div>
+
+                <div id="checkOutSection" style="display: none;">
+                    <div class="attendance-info">
+                        <p><strong>Checked in at:</strong> <span id="checkedInTime"></span></p>
+                        <p><strong>Location:</strong> <span id="checkedInLocation"></span></p>
+                    </div>
+                    <button onclick="checkOut()" class="btn btn-danger btn-large" id="checkOutBtn">
+                        Check Out
+                    </button>
+                </div>
+            </div>
+
+            <!-- Location Detection -->
+            <div class="card">
+                <h3>Your Current Location</h3>
+                <div id="currentLocation" class="location-display">
+                    <p>Click "Get Location" to detect your position</p>
+                </div>
+                <button onclick="getCurrentUserLocation()" class="btn btn-secondary">
+                    Get Location
+                </button>
+            </div>
+
+            <!-- Attendance History -->
+            <div class="card">
+                <div class="section-header">
+                    <h2>My Attendance History</h2>
+                    <div class="date-filter">
+                        <input type="date" id="historyStartDate">
+                        <input type="date" id="historyEndDate">
+                        <button onclick="loadAttendanceHistory()" class="btn btn-secondary">Filter</button>
+                    </div>
+                </div>
+                <div id="attendanceHistory" class="data-table"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/user.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Attendance System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <h1>Admin Panel</h1>
+            <div class="nav-actions">
+                <span id="adminName"></span>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('locations')">Locations</button>
+            <button class="tab-button" onclick="showTab('users')">Users</button>
+            <button class="tab-button" onclick="showTab('attendance')">Attendance</button>
+        </div>
+
+        <!-- Locations Tab -->
+        <div id="locationsTab" class="tab-content active">
+            <div class="section-header">
+                <h2>Manage Locations</h2>
+                <button onclick="showLocationModal()" class="btn btn-primary">Add Location</button>
+            </div>
+            <div id="locationsList" class="data-table"></div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersTab" class="tab-content">
+            <div class="section-header">
+                <h2>Manage Users</h2>
+                <button onclick="showUserModal()" class="btn btn-primary">Add User</button>
+            </div>
+            <div id="usersList" class="data-table"></div>
+        </div>
+
+        <!-- Attendance Tab -->
+        <div id="attendanceTab" class="tab-content">
+            <div class="section-header">
+                <h2>Attendance Records</h2>
+                <button onclick="showAttendanceModal()" class="btn btn-primary">Add Manual Entry</button>
+            </div>
+            <div class="filter-section">
+                <input type="date" id="startDate" placeholder="Start Date">
+                <input type="date" id="endDate" placeholder="End Date">
+                <select id="filterUser">
+                    <option value="">All Users</option>
+                </select>
+                <select id="filterLocation">
+                    <option value="">All Locations</option>
+                </select>
+                <button onclick="filterAttendance()" class="btn btn-secondary">Filter</button>
+                <button onclick="clearFilters()" class="btn btn-secondary">Clear</button>
+            </div>
+            <div id="attendanceList" class="data-table"></div>
+        </div>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="locationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLocationModal()">&times;</span>
+            <h2 id="locationModalTitle">Add Location</h2>
+            <form id="locationForm">
+                <input type="hidden" id="locationId">
+                <div class="form-group">
+                    <label for="locationName">Name</label>
+                    <input type="text" id="locationName" required>
+                </div>
+                <div class="form-group">
+                    <label for="locationDescription">Description</label>
+                    <textarea id="locationDescription"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="locationLatitude">Latitude</label>
+                        <input type="number" id="locationLatitude" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="locationLongitude">Longitude</label>
+                        <input type="number" id="locationLongitude" step="any" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="locationRadius">Radius (meters)</label>
+                    <input type="number" id="locationRadius" min="10" max="5000" value="100" required>
+                </div>
+                <button type="button" onclick="getCurrentLocation()" class="btn btn-secondary">Use Current Location</button>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" onclick="closeLocationModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h2 id="userModalTitle">Add User</h2>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <div class="form-group">
+                    <label for="userName">Name</label>
+                    <input type="text" id="userName" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword">
+                </div>
+                <div class="form-group">
+                    <label for="userEmployeeId">Employee ID</label>
+                    <input type="text" id="userEmployeeId">
+                </div>
+                <div class="form-group">
+                    <label for="userDepartment">Department</label>
+                    <input type="text" id="userDepartment">
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role</label>
+                    <select id="userRole" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" onclick="closeUserModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div id="attendanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAttendanceModal()">&times;</span>
+            <h2 id="attendanceModalTitle">Add/Edit Attendance</h2>
+            <form id="attendanceForm">
+                <input type="hidden" id="attendanceId">
+                <div class="form-group">
+                    <label for="attendanceUser">User</label>
+                    <select id="attendanceUser" required>
+                        <option value="">Select User</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceLocation">Location</label>
+                    <select id="attendanceLocation" required>
+                        <option value="">Select Location</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="attendanceCheckIn">Check-in Time</label>
+                        <input type="datetime-local" id="attendanceCheckIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="attendanceCheckOut">Check-out Time</label>
+                        <input type="datetime-local" id="attendanceCheckOut">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="attendanceLatitude">Latitude</label>
+                        <input type="number" id="attendanceLatitude" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="attendanceLongitude">Longitude</label>
+                        <input type="number" id="attendanceLongitude" step="any" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceStatus">Status</label>
+                    <select id="attendanceStatus" required>
+                        <option value="present">Present</option>
+                        <option value="absent">Absent</option>
+                        <option value="late">Late</option>
+                        <option value="half-day">Half Day</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceNotes">Notes</label>
+                    <textarea id="attendanceNotes"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceReason">Reason for Manual Entry</label>
+                    <textarea id="attendanceReason" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" onclick="closeAttendanceModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
